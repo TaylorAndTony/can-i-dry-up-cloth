@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>能不能晾衣服</title>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #454545;
+        transition: all 1s ease-in-out;
+    }
+
+    #main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+    }
+
+    #main-text {
+        font-size: 48px;
+        color: white;
+    }
+
+    #tampermonkey {
+        font-size: 24px;
+        color: white;
+    }
+
+    #help {
+        font-size: 20px;
+        color: white;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(6px);
+        color: white;
+        font-size: 22px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<body>
+    <div id="main">
+        <div id="main-text">获取中</div>
+        <div id="tampermonkey">请使用配套篡改猴脚本，用以实现对 nmc.cn 的跨域访问</div>
+        <div id="help">帮助</div>
+    </div>
+    <script>
+        console.log('inject start');
+        const WEATHER_RAIN_KEYWORD = '雨';
+        const WIND_SAFE_SPEED = 5;
+        const WIND_DANGER_SPEED = 10;
+        const COLOR_SAFE = '#007b43';
+        const COLOR_WARNING = '#bf783a';
+        const COLOR_DANGER = '#ba2636';
+        // check if Tampermonkey injected the function __Get_Data
+        let timer = setInterval(async () => {
+            if (typeof __Get_Data === 'function') {
+                clearInterval(timer);
+                let mainText = $('#main-text');
+                let tampermonkey = $('#tampermonkey');
+                mainText.text('拉取数据……');
+                console.log('inject success');
+                // get data
+                let data = await __Get_Data();
+                console.log(data);
+                // begin to judge
+                tampermonkey.text(`${data.windRaw} ${data.weather}`);
+                if (data.weather.indexOf(WEATHER_RAIN_KEYWORD) !== -1) {
+                    mainText.text('有雨，不要晾衣服');
+                    $('body').css('background-color', COLOR_DANGER);
+                } else if (data.windParsed > WIND_DANGER_SPEED) {
+                    mainText.text('风太大，不要晾衣服');
+                    $('body').css('background-color', COLOR_DANGER);
+                } else if (data.windParsed > WIND_SAFE_SPEED) {
+                    mainText.text('风偏大，小心晾衣服');
+                    $('body').css('background-color', COLOR_WARNING);
+                } else {
+                    mainText.text('今天适合晾衣服');
+                    $('body').css('background-color', COLOR_SAFE);
+                }
+            }
+        }, 1000);
+        $('#help').click(() => {
+            $(`<div class="popup"></div>`).html(`
+                <p>1. 请使用配套的 Tampermonkey 脚本，用以实现对 nmc.cn 的跨域访问</p>
+                <p>2. 所有关于城市、网页数据提取的配置均在 Tampermonkey 脚本内完成</p>
+                <button id="close">关闭</button>
+            `).appendTo('body');
+            $('#close').click(() => {
+                $('.popup').remove();
+            });
+        });
+    </script>
+</body>
+
+</html>
