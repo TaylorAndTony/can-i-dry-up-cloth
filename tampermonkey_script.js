@@ -5,6 +5,7 @@
 // @description  try to take over the world!
 // @author       You
 // @match        http://127.0.0.1:5500/index.html
+// @match        https://taylorandtony.github.io/can-i-dry-up-cloth/
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=nmc.cn
 // @require      https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js
 // @grant        unsafeWindow
