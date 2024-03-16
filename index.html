@@ -14,6 +14,7 @@
         padding: 0;
         background-color: #454545;
         transition: all 1s ease-in-out;
+        font-family: Arial, Helvetica, sans-serif;
     }
 
     #main {
@@ -79,7 +80,7 @@
 
 <body>
     <div id="main">
-        <div id="main-text">获取中</div>
+        <div id="main-text">等待脚本</div>
         <div id="tampermonkey">请使用配套篡改猴脚本，用以实现对 nmc.cn 的跨域访问</div>
         <div>
             <div id="help">帮助</div>
@@ -100,7 +101,7 @@
                 clearInterval(timer);
                 let mainText = $('#main-text');
                 let tampermonkey = $('#tampermonkey');
-                mainText.text('拉取数据……');
+                mainText.text('拉取数据');
                 console.log('inject success');
                 // get data
                 let data = await __Get_Data();
@@ -108,16 +109,16 @@
                 // begin to judge
                 tampermonkey.text(`${data.windRaw} ${data.weather}`);
                 if (data.weather.indexOf(WEATHER_RAIN_KEYWORD) !== -1) {
-                    mainText.text('有雨，不要晾衣服');
+                    mainText.text('有雨');
                     $('body').css('background-color', COLOR_DANGER);
                 } else if (data.windParsed > WIND_DANGER_SPEED) {
-                    mainText.text('风太大，不要晾衣服');
+                    mainText.text('风太大');
                     $('body').css('background-color', COLOR_DANGER);
                 } else if (data.windParsed > WIND_SAFE_SPEED) {
-                    mainText.text('风偏大，小心晾衣服');
+                    mainText.text('风偏大');
                     $('body').css('background-color', COLOR_WARNING);
                 } else {
-                    mainText.text('今天适合晾衣服');
+                    mainText.text('适合晾衣服');
                     $('body').css('background-color', COLOR_SAFE);
                 }
             }
