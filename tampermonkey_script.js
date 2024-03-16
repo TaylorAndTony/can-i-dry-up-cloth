@@ -7,7 +7,6 @@
 // @match        http://127.0.0.1:5500/index.html
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=nmc.cn
 // @require      https://cdn.bootcdn.net/ajax/libs/jquery/3.7.1/jquery.min.js
-// @require      https://cdn.jsdelivr.net/npm/sweetalert2@8
 // @grant        unsafeWindow
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==

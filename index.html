@@ -34,6 +34,7 @@
     }
 
     #help {
+        display: inline-block;
         font-size: 20px;
         color: white;
         cursor: pointer;
@@ -57,13 +58,32 @@
         align-items: center;
         justify-content: center;
     }
+    a#open-script {
+        display: inline-block;
+        font-size: 20px;
+        color: white;
+        text-decoration: none;
+        margin-left: 10px;
+    }
+    button {
+        padding: 10px 20px;
+        font-size: 20px;
+        cursor: pointer;
+        background: transparent;
+        color: white;
+        border: 1px solid white;
+        border-radius: 6px;
+    }
 </style>
 
 <body>
     <div id="main">
         <div id="main-text">获取中</div>
         <div id="tampermonkey">请使用配套篡改猴脚本，用以实现对 nmc.cn 的跨域访问</div>
-        <div id="help">帮助</div>
+        <div>
+            <div id="help">帮助</div>
+            <a id="open-script" href="./tampermonkey_script.js" target="_blank">查看脚本</a>
+        </div>
     </div>
     <script>
         console.log('inject start');
