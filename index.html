@@ -33,6 +33,7 @@
     #tampermonkey {
         font-size: 24px;
         color: white;
+        margin-top: 20px;
     }
 
     #help {
@@ -54,12 +55,14 @@
         font-size: 22px;
         padding: 20px;
         border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
+        width: 70%;
+        max-width: 600px;
     }
+
     a#open-script {
         display: inline-block;
         font-size: 20px;
@@ -67,6 +70,7 @@
         text-decoration: none;
         margin-left: 10px;
     }
+
     button {
         padding: 10px 20px;
         font-size: 20px;
@@ -125,8 +129,18 @@
         }, 1000);
         $('#help').click(() => {
             $(`<div class="popup"></div>`).html(`
-                <p>1. 请使用配套的 Tampermonkey 脚本，用以实现对 nmc.cn 的跨域访问</p>
-                <p>2. 所有关于城市、网页数据提取的配置均在 Tampermonkey 脚本内完成</p>
+                <p>1. 请使用配套的 Tampermonkey 脚本，城市、数据提取配置均在脚本内完成</p>
+                <p>2. 脚本本质上提供了一个异步的 __Get_Data() 函数，其返回格式：</p>
+                <pre>
+                    <code>
+{
+    windRaw: '原始css捕获',
+    windStem: '风速数字部分字符串',
+    windParsed: 风速浮点数,
+    weather: '天气字符串'
+}
+                    </code>
+                </pre>
                 <button id="close">关闭</button>
             `).appendTo('body');
             $('#close').click(() => {
