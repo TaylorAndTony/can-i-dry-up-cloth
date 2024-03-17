@@ -52,7 +52,6 @@
         background-color: rgba(0, 0, 0, 0.5);
         backdrop-filter: blur(6px);
         color: white;
-        font-size: 22px;
         padding: 20px;
         border-radius: 10px;
         box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
@@ -94,37 +93,19 @@
     <script>
         console.log('inject start');
         const WEATHER_RAIN_KEYWORD = '雨';
-        const WIND_SAFE_SPEED = 5;
-        const WIND_DANGER_SPEED = 10;
+        const WIND_SAFE_SPEED = 4;
+        const WIND_DANGER_SPEED = 8;
         const COLOR_SAFE = '#007b43';
         const COLOR_WARNING = '#bf783a';
         const COLOR_DANGER = '#ba2636';
         // check if Tampermonkey injected the function __Get_Data
         let timer = setInterval(async () => {
             if (typeof __Get_Data === 'function') {
+                // __Get_Data found
                 clearInterval(timer);
-                let mainText = $('#main-text');
-                let tampermonkey = $('#tampermonkey');
-                mainText.text('拉取数据');
-                console.log('inject success');
-                // get data
-                let data = await __Get_Data();
-                console.log(data);
-                // begin to judge
-                tampermonkey.text(`${data.windRaw} ${data.weather}`);
-                if (data.weather.indexOf(WEATHER_RAIN_KEYWORD) !== -1) {
-                    mainText.text('有雨');
-                    $('body').css('background-color', COLOR_DANGER);
-                } else if (data.windParsed > WIND_DANGER_SPEED) {
-                    mainText.text('风太大');
-                    $('body').css('background-color', COLOR_DANGER);
-                } else if (data.windParsed > WIND_SAFE_SPEED) {
-                    mainText.text('风偏大');
-                    $('body').css('background-color', COLOR_WARNING);
-                } else {
-                    mainText.text('适合晾衣服');
-                    $('body').css('background-color', COLOR_SAFE);
-                }
+                await manipulateData();
+            } else {
+                // __Get_Data not found
             }
         }, 1000);
         $('#help').click(() => {
@@ -147,6 +128,31 @@
                 $('.popup').remove();
             });
         });
+
+        async function manipulateData() {
+            let mainText = $('#main-text');
+            let tampermonkey = $('#tampermonkey');
+            mainText.text('拉取数据');
+            console.log('inject success');
+            // get data
+            let data = await __Get_Data();
+            console.log(data);
+            // begin to judge
+            tampermonkey.text(`${data.windRaw} ${data.weather}`);
+            if (data.weather.indexOf(WEATHER_RAIN_KEYWORD) !== -1) {
+                mainText.text('有雨');
+                $('body').css('background-color', COLOR_DANGER);
+            } else if (data.windParsed > WIND_DANGER_SPEED) {
+                mainText.text('风太大');
+                $('body').css('background-color', COLOR_DANGER);
+            } else if (data.windParsed > WIND_SAFE_SPEED) {
+                mainText.text('风偏大');
+                $('body').css('background-color', COLOR_WARNING);
+            } else {
+                mainText.text('适合晾衣服');
+                $('body').css('background-color', COLOR_SAFE);
+            }
+        }
     </script>
 </body>
 
