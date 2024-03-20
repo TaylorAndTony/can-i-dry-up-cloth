@@ -115,9 +115,9 @@
                 <pre>
                     <code>
 {
-    windRaw: '原始css捕获',
-    windStem: '风速数字部分字符串',
+    windRaw: '原始css捕获，可以是任意 object，此项仅调试使用',
     windParsed: 风速浮点数,
+    trend: '变化趋势，字符，+增加，-减少，=不变，?未知',
     weather: '天气字符串'
 }
                     </code>
@@ -138,7 +138,22 @@
             let data = await __Get_Data();
             console.log(data);
             // begin to judge
-            tampermonkey.text(`${data.windRaw} ${data.weather}`);
+            let trend = '';
+            switch (data.trend) {
+                case '+':
+                    trend = '渐强';
+                    break;
+                case '-':
+                    trend = '渐弱';
+                    break;
+                case '=':
+                    trend = '保持';
+                    break;
+                default:
+                    trend = '未知';
+                    break;
+            }
+            tampermonkey.text(`${data.windParsed} (${trend}) ${data.weather}`);
             if (data.weather.indexOf(WEATHER_RAIN_KEYWORD) !== -1) {
                 mainText.text('有雨');
                 $('body').css('background-color', COLOR_DANGER);

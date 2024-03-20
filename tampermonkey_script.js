@@ -17,10 +17,10 @@ this.$ = this.jQuery = unsafeWindow.$ || unsafeWindow.jQuery || jQuery.noConflic
 // 配置项
 // 目标网址
 const URL = 'http://www.nmc.cn/publish/forecast/ASD/yantai.html'
-// 风速 css 选择器
-const WIND = '#day0 > div:nth-child(1) > div:nth-child(5)'
+// 风速 css 选择器，会选择多个风速
+const WIND_SELECTOR = '#day0 > div.hour3 > div:nth-child(5)'
 // 天气（晴、小雨等）css 选择器
-const WEATHER = '#day7 > div.weather.pull-left.selected > div > div:nth-child(9)';
+const WEATHER_SELECTOR = '#day7 > div.weather.pull-left.selected > div > div:nth-child(9)';
 // 风速正则表达式
 const WIND_REGEX = /(\d+.\d+)m\/s/;
 
@@ -32,19 +32,37 @@ async function __Get_Data() {
     });
     let html = response.responseText;
     let obj = $(html);
-    let wind = obj.find(WIND).text();
-    let weather = obj.find(WEATHER).text();
-    let windStem = wind.match(WIND_REGEX)[1];
-    console.log(wind, weather);
+    let winds = [];
+    obj.find(WIND_SELECTOR).each(function () {
+        console.log($(this).text());
+        let t = $(this);
+        let match = t.text().match(WIND_REGEX);
+        if (match) {
+            winds.push(parseFloat(match[1]));
+        }
+    });
+    let windAvg = winds.reduce((a, b) => a + b) / winds.length;
+    let trend = '?';
+    if (winds.length > 1) {
+        if (winds[1] > winds[0]) {
+            trend = '+';
+        } else if (winds[1] < winds[0]) {
+            trend = '-';
+        } else {
+            trend = '=';
+        }
+    }
+    let weather = obj.find(WEATHER_SELECTOR).text();
+    console.log(windAvg, weather);
     return {
-        windRaw: wind,
-        windStem: windStem,
-        windParsed: parseFloat(windStem),
+        windRaw: winds,
+        windParsed: windAvg,
+        trend: trend,
         weather: weather
     }
 }
 
-(function() {
+(function () {
     'use strict';
     unsafeWindow.__Get_Data = __Get_Data;
     window.__Get_Data = __Get_Data;
