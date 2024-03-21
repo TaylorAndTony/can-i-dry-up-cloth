@@ -41,7 +41,7 @@ async function __Get_Data() {
             winds.push(parseFloat(match[1]));
         }
     });
-    let windAvg = winds.reduce((a, b) => a + b) / winds.length;
+    let windMax = Math.max(...winds);
     let trend = '?';
     if (winds.length > 1) {
         if (winds[1] > winds[0]) {
@@ -53,10 +53,10 @@ async function __Get_Data() {
         }
     }
     let weather = obj.find(WEATHER_SELECTOR).text();
-    console.log(windAvg, weather);
+    console.log(windMax, weather);
     return {
         windRaw: winds,
-        windParsed: windAvg,
+        windParsed: windMax,
         trend: trend,
         weather: weather
     }
